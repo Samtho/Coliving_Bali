@@ -1,0 +1,5 @@
+{
+  "name": "IncidenBot - Bali Coliving Manager",
+  "description": "An AI-powered incident management dashboard for a coliving space in Bali. It analyzes informal tenant messages to extract structured data, urgency levels, and suggested replies.",
+  "requestFramePermissions": []
+}
