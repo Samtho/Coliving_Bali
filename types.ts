@@ -28,6 +28,7 @@ export interface IncidentRecord extends IncidentAnalysis {
   tenantName: string;
   room: string;
   description: string; // El texto original del input
+  original_message?: string; // Campo opcional para compatibilidad con registros antiguos
   status: IncidentStatus;
   source: string; // ej. "tenant_portal", "whatsapp"
   coliving: string; // ej. "Bali Coliving"
