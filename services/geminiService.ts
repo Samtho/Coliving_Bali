@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
-import { IncidentAnalysis, IncidentCategory, Sentiment } from "../types";
+import { IncidentAnalysis, IncidentCategory, Sentiment, Language } from "../types";
 
 const apiKey = process.env.API_KEY;
 
@@ -29,7 +29,7 @@ const responseSchema: Schema = {
     },
     action_summary: {
       type: Type.STRING,
-      description: "Resumen operativo breve (máximo 5-7 palabras) en ESPAÑOL."
+      description: "Resumen operativo breve (máximo 5-7 palabras)."
     },
     suggested_reply: {
       type: Type.STRING,
@@ -39,18 +39,29 @@ const responseSchema: Schema = {
   required: ["category", "urgency_level", "sentiment", "action_summary", "suggested_reply"]
 };
 
-export const analyzeIncident = async (inputText: string): Promise<IncidentAnalysis> => {
+export const analyzeIncident = async (inputText: string, language: Language = 'es'): Promise<IncidentAnalysis> => {
   if (!apiKey) {
     throw new Error("API Key is missing. Please check your environment configuration.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
 
+  const langNames = {
+      es: "ESPAÑOL",
+      en: "INGLÉS (ENGLISH)",
+      id: "INDONESIO (BAHASA INDONESIA)"
+  };
+
+  const targetLang = langNames[language];
+
   const systemInstruction = `
     Eres el "IncidenBot", un gestor de incidencias experto para un Coliving en Bali. 
     Gestionamos 50 habitaciones. Los inquilinos pueden escribir mensajes vagos, urgentes o enfadados.
     
     Analiza el texto de entrada y genera los campos requeridos en formato JSON estricto.
+    
+    IDIOMA DE SALIDA:
+    El campo 'action_summary' y 'suggested_reply' DEBEN ser generados en ${targetLang}.
     
     CRITERIOS DE URGENCIA:
     1: Puede esperar semanas.

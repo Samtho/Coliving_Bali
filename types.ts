@@ -13,6 +13,7 @@ export enum Sentiment {
 }
 
 export type IncidentStatus = 'open' | 'in_progress' | 'resolved' | 'canceled';
+export type Language = 'es' | 'en' | 'id';
 
 export interface IncidentAnalysis {
   category: IncidentCategory;
@@ -36,6 +37,7 @@ export interface IncidentRecord extends IncidentAnalysis {
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
+  resolvedAt?: Date; // Nuevo campo para tracking de tiempo
 }
 
 export interface AnalysisState {

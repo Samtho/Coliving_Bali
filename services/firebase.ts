@@ -39,7 +39,8 @@ export const subscribeToIncidents = (onDataChange: (data: IncidentRecord[]) => v
         id: doc.id,
         ...data,
         createdAt: convertTimestampToDate(data.createdAt),
-        updatedAt: convertTimestampToDate(data.updatedAt)
+        updatedAt: convertTimestampToDate(data.updatedAt),
+        resolvedAt: data.resolvedAt ? convertTimestampToDate(data.resolvedAt) : undefined
       } as IncidentRecord;
     });
     
@@ -70,10 +71,18 @@ export const addIncidentToDb = async (incident: Omit<IncidentRecord, 'id'>) => {
 export const updateIncidentStatusInDb = async (id: string, status: IncidentStatus) => {
   try {
     const incidentRef = doc(db, "incidents", id);
-    await updateDoc(incidentRef, {
+    
+    const updateData: any = {
       status: status,
       updatedAt: Timestamp.now()
-    });
+    };
+
+    // Si el estado pasa a resuelto, guardamos la fecha de resolución
+    if (status === 'resolved') {
+        updateData.resolvedAt = Timestamp.now();
+    }
+
+    await updateDoc(incidentRef, updateData);
   } catch (e) {
     console.error("Error updating document: ", e);
     throw e;
